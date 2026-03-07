@@ -32,6 +32,7 @@ const StatCounter: React.FC<{ value: number; suffix?: string }> = ({ value, suff
 const AboutSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const imageMainRef = useRef<HTMLDivElement>(null);
+  const imageInnerRef = useRef<HTMLImageElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
@@ -50,15 +51,16 @@ const AboutSection: React.FC = () => {
         }
       });
 
-      // Pronounced parallax for the main image
-      if (imageMainRef.current) {
-        gsap.to(imageMainRef.current, {
-          y: -80,
+      // Smooth integrated parallax for the main image
+      if (imageInnerRef.current) {
+        gsap.to(imageInnerRef.current, {
+          y: "15%",
+          ease: "none",
           scrollTrigger: {
-            trigger: sectionRef.current,
+            trigger: imageMainRef.current,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: 1,
+            scrub: true,
           },
         });
       }
@@ -102,9 +104,10 @@ const AboutSection: React.FC = () => {
                 className="relative z-20 w-full aspect-[3/4] rounded-2xl overflow-hidden border border-white/5 group"
               >
                 <img
+                  ref={imageInnerRef}
                   src="https://picsum.photos/seed/agency-minimal/1200/1600"
                   alt="Our Creative Studio"
-                  className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
+                  className="w-full h-[120%] -top-[10%] absolute object-cover grayscale-[0.6] brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 ease-out"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
