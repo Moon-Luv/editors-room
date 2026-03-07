@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 
 import AboutSection from './components/AboutSection';
+import ProjectsSection from './components/ProjectsSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -112,7 +113,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', href: '#' },
     { name: 'About', href: '#about' },
-    { name: 'Features', href: '#features' },
+    { name: 'Projects', href: '#projects' },
     { name: 'Team', href: '#team' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'FAQ', href: '#faq' },
@@ -343,67 +344,6 @@ const FeaturesSection = () => {
               <p className="text-zinc-500 leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const ShowcaseSection = () => {
-  return (
-    <section className="py-32 bg-zinc-950/50 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <span className="text-brand font-bold tracking-[0.3em] uppercase text-sm mb-4 block">Product Showcase</span>
-            <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter mb-8 leading-[0.9]">The next generation <br /> of digital products.</h2>
-            <p className="text-xl text-zinc-400 leading-relaxed mb-12">
-              Our platform empowers creators to build immersive experiences with ease. From concept to deployment, we provide the tools you need to succeed.
-            </p>
-            <ul className="space-y-6 mb-12">
-              {['Seamless Integration', 'AI-Powered Workflows', 'Real-time Collaboration'].map((item) => (
-                <li key={item} className="flex items-center gap-4 text-lg font-medium">
-                  <div className="w-6 h-6 rounded-full bg-brand/20 flex items-center justify-center text-brand">
-                    <Sparkles size={14} />
-                  </div>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <motion.button 
-              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(255, 77, 0, 0.4)" }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all brand-glow"
-            >
-              Learn More
-            </motion.button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="relative aspect-square rounded-[60px] overflow-hidden border border-white/10"
-          >
-            <img 
-              src="https://picsum.photos/seed/showcase/1200/1200" 
-              alt="Showcase" 
-              className="w-full h-full object-cover grayscale brightness-50"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand/20 to-transparent" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white animate-pulse">
-                <Zap size={40} />
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
@@ -781,7 +721,7 @@ export default function App() {
         <Hero />
         <AboutSection />
         <FeaturesSection />
-        <ShowcaseSection />
+        <ProjectsSection />
         <TeamSection />
         <TestimonialsSection />
         <FAQSection />
