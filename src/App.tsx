@@ -28,6 +28,8 @@ import {
   Star
 } from 'lucide-react';
 
+import AboutSection from './components/AboutSection';
+
 gsap.registerPlugin(ScrollTrigger);
 
 // --- Three.js Background Components ---
@@ -109,6 +111,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', href: '#' },
+    { name: 'About', href: '#about' },
     { name: 'Features', href: '#features' },
     { name: 'Team', href: '#team' },
     { name: 'Testimonials', href: '#testimonials' },
@@ -134,9 +137,13 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
-            <button className="bg-white text-black px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-brand hover:text-white transition-all active:scale-95 brand-glow">
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255, 77, 0, 0.4)" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-brand hover:text-white transition-all brand-glow"
+            >
               Get Started
-            </button>
+            </motion.button>
           </div>
 
           {/* Mobile Toggle */}
@@ -169,9 +176,13 @@ const Navbar = () => {
                 {link.name}
               </motion.a>
             ))}
-            <button className="mt-8 bg-brand text-white px-10 py-4 rounded-2xl font-bold text-xl brand-glow">
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255, 77, 0, 0.6)" }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-8 bg-brand text-white px-10 py-4 rounded-2xl font-bold text-xl brand-glow"
+            >
               Get Started
-            </button>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -245,13 +256,21 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <button className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all flex items-center gap-3 group brand-glow">
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255, 77, 0, 0.5)" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all flex items-center gap-3 group brand-glow"
+            >
               Get Started
               <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
-            </button>
-            <button className="px-10 py-5 rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/5 transition-all">
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              whileTap={{ scale: 0.95 }}
+              className="px-10 py-5 rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/5 transition-all"
+            >
               View our work
-            </button>
+            </motion.button>
           </div>
         </motion.div>
       </div>
@@ -356,9 +375,13 @@ const ShowcaseSection = () => {
                 </li>
               ))}
             </ul>
-            <button className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all brand-glow">
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(255, 77, 0, 0.4)" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all brand-glow"
+            >
               Learn More
-            </button>
+            </motion.button>
           </motion.div>
 
           <motion.div
@@ -446,6 +469,59 @@ const TeamSection = () => {
   );
 };
 
+const TestimonialCard = ({ t, idx }: { t: any, idx: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"]
+  });
+
+  // More pronounced parallax movement for the photo
+  const y = useTransform(scrollYProgress, [0, 1], [25, -25]);
+
+  return (
+    <motion.div 
+      ref={cardRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: idx * 0.15, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ 
+        y: -12,
+        transition: { duration: 0.4 }
+      }}
+      className="p-12 rounded-[40px] bg-white/5 border border-white/10 relative group transition-colors hover:border-brand/30"
+    >
+      <div className="flex gap-1 mb-8">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} size={16} className="text-brand fill-brand" />
+        ))}
+      </div>
+      <p className="text-2xl font-display font-medium leading-relaxed mb-10 italic text-zinc-200">“{t.quote}”</p>
+      <div className="flex items-center gap-4">
+        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-brand/30 shadow-[0_0_20px_rgba(255,77,0,0.15)]">
+          <motion.img 
+            style={{ y }}
+            src={t.avatar} 
+            alt={t.name} 
+            className="absolute -top-6 left-0 w-full h-[160%] object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+            referrerPolicy="no-referrer" 
+          />
+        </div>
+        <div>
+          <h4 className="font-bold text-lg text-white">{t.name}</h4>
+          <p className="text-zinc-500 text-sm font-medium uppercase tracking-widest">{t.role}</p>
+        </div>
+      </div>
+      
+      {/* Decorative corner element */}
+      <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity">
+        <Sparkles size={24} className="text-brand" />
+      </div>
+    </motion.div>
+  );
+};
+
 const TestimonialsSection = () => {
   const testimonials = [
     { name: 'Lena Brooks', role: 'CEO at Nexora', quote: 'They translated our vision into a modern, scalable digital identity — crafted, fast, and ahead of the curve.', avatar: 'https://i.pravatar.cc/150?u=lena' },
@@ -463,28 +539,7 @@ const TestimonialsSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {testimonials.map((t, idx) => (
-            <motion.div 
-              key={t.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.8 }}
-              className="p-12 rounded-[40px] bg-white/5 border border-white/10 relative group"
-            >
-              <div className="flex gap-1 mb-8">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={16} className="text-brand fill-brand" />
-                ))}
-              </div>
-              <p className="text-2xl font-display font-medium leading-relaxed mb-10 italic">“{t.quote}”</p>
-              <div className="flex items-center gap-4">
-                <img src={t.avatar} alt={t.name} className="w-14 h-14 rounded-full object-cover border-2 border-brand/30" referrerPolicy="no-referrer" />
-                <div>
-                  <h4 className="font-bold text-lg">{t.name}</h4>
-                  <p className="text-zinc-500 text-sm">{t.role}</p>
-                </div>
-              </div>
-            </motion.div>
+            <TestimonialCard key={t.name} t={t} idx={idx} />
           ))}
         </div>
       </div>
@@ -561,9 +616,13 @@ const CTASection = () => {
             <p className="text-xl text-white/80 max-w-2xl mx-auto mb-12 font-medium">
               Join the ranks of industry leaders who have transformed their digital presence with Pumpkin Studio.
             </p>
-            <button className="bg-white text-black px-12 py-6 rounded-2xl font-bold text-xl hover:scale-105 transition-transform shadow-2xl">
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(255, 255, 255, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black px-12 py-6 rounded-2xl font-bold text-xl transition-all shadow-2xl"
+            >
               Get Started Now
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </div>
@@ -626,9 +685,13 @@ const ContactSection = () => {
                 <textarea rows={4} placeholder="Tell us about your project..." className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:border-brand transition-colors outline-none resize-none" />
               </div>
             </div>
-            <button className="w-full bg-brand text-white py-5 rounded-2xl font-bold text-lg hover:bg-brand-dark transition-all brand-glow">
+            <motion.button 
+              whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(255, 77, 0, 0.5)" }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-brand text-white py-5 rounded-2xl font-bold text-lg hover:bg-brand-dark transition-all brand-glow"
+            >
               Send Message
-            </button>
+            </motion.button>
           </motion.form>
         </div>
       </div>
@@ -716,6 +779,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <AboutSection />
         <FeaturesSection />
         <ShowcaseSection />
         <TeamSection />
