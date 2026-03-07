@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'motion/react';
-import { Quote, Star, ArrowRight, ArrowLeft } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'motion/react';
+import { Quote, Star, ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 
 interface Testimonial {
   id: number;
@@ -51,6 +51,9 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+// Triple for infinite scroll
+const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+
 const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = ({ testimonial, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -67,11 +70,7 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
     <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group"
+      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group flex-shrink-0 w-[320px] md:w-[600px] snap-start"
     >
       {/* Spotlight Effect */}
       <motion.div
@@ -96,12 +95,12 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
           ))}
         </div>
 
-        <p className="text-2xl md:text-4xl font-display font-medium leading-[1.2] text-white mb-12 tracking-tight">
+        <p className="text-xl md:text-3xl font-display font-medium leading-[1.3] text-white mb-12 tracking-tight">
           "{testimonial.content}"
         </p>
 
         <div className="flex items-center gap-6">
-          <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-brand/20 p-1">
+          <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-brand/20 p-1">
             <div className="w-full h-full rounded-full overflow-hidden">
               <img
                 src={testimonial.avatar}
@@ -112,8 +111,8 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
             </div>
           </div>
           <div>
-            <h4 className="font-bold text-white text-2xl tracking-tighter">{testimonial.name}</h4>
-            <p className="text-zinc-500 text-sm font-mono uppercase tracking-[0.2em]">
+            <h4 className="font-bold text-white text-xl md:text-2xl tracking-tighter">{testimonial.name}</h4>
+            <p className="text-zinc-500 text-xs md:text-sm font-mono uppercase tracking-[0.2em]">
               {testimonial.role} <span className="text-brand mx-2">/</span> {testimonial.company}
             </p>
           </div>
@@ -124,10 +123,81 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
 };
 
 const TestimonialsSection: React.FC = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [scrollX, setScrollX] = useState(0);
+  const [maxScroll, setMaxScroll] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isInitialScrollSet, setIsInitialScrollSet] = useState(false);
+
+  useEffect(() => {
+    const updateMaxScroll = () => {
+      if (carouselRef.current) {
+        const fullWidth = carouselRef.current.scrollWidth;
+        const visibleWidth = carouselRef.current.offsetWidth;
+        const newMaxScroll = fullWidth - visibleWidth;
+        setMaxScroll(newMaxScroll);
+
+        if (!isInitialScrollSet && fullWidth > 0) {
+          const singleSetWidth = fullWidth / 3;
+          carouselRef.current.scrollLeft = singleSetWidth;
+          setScrollX(singleSetWidth);
+          setIsInitialScrollSet(true);
+        }
+      }
+    };
+    
+    updateMaxScroll();
+    window.addEventListener('resize', updateMaxScroll);
+    return () => window.removeEventListener('resize', updateMaxScroll);
+  }, [isInitialScrollSet]);
+
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      handleScroll('right');
+    }, 5000); // 5 seconds for testimonials
+
+    return () => clearInterval(interval);
+  }, [isPaused, scrollX, maxScroll]);
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    const cardWidth = window.innerWidth < 768 ? 320 : 600;
+    const gap = 32;
+    const scrollAmount = cardWidth + gap;
+    
+    let newScroll = direction === 'left' ? scrollX - scrollAmount : scrollX + scrollAmount;
+    
+    carouselRef.current.scrollTo({
+      left: newScroll,
+      behavior: 'smooth'
+    });
+  };
+
+  const onScroll = () => {
+    if (!carouselRef.current) return;
+    const currentScroll = carouselRef.current.scrollLeft;
+    const fullWidth = carouselRef.current.scrollWidth;
+    const singleSetWidth = fullWidth / 3;
+
+    if (currentScroll >= singleSetWidth * 2) {
+      carouselRef.current.scrollLeft = currentScroll - singleSetWidth;
+    } else if (currentScroll <= singleSetWidth - carouselRef.current.offsetWidth) {
+      if (currentScroll < 10) {
+         carouselRef.current.scrollLeft = singleSetWidth;
+      }
+    }
+
+    setScrollX(carouselRef.current.scrollLeft);
+  };
+
+  const handleInteractionStart = () => setIsPaused(true);
+  const handleInteractionEnd = () => setIsPaused(false);
 
   return (
-    <section id="testimonials" className="py-32 lg:py-64 relative overflow-hidden bg-zinc-950">
+    <section id="testimonials" ref={sectionRef} className="py-32 lg:py-64 relative overflow-hidden bg-zinc-950">
       {/* Background Accents */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2" />
@@ -150,24 +220,47 @@ const TestimonialsSection: React.FC = () => {
           </div>
           
           <div className="flex gap-4">
-            <button className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+            <button 
+              onClick={() => { handleScroll('left'); handleInteractionStart(); setTimeout(handleInteractionEnd, 5000); }}
+              className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
+            >
               <ArrowLeft size={24} />
             </button>
-            <button className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:border-brand transition-all">
+            <button 
+              onClick={() => { handleScroll('right'); handleInteractionStart(); setTimeout(handleInteractionEnd, 5000); }}
+              className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:border-brand transition-all"
+            >
               <ArrowRight size={24} />
             </button>
           </div>
         </div>
 
-        {/* Staggered Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 flex flex-col gap-8">
-            <TestimonialCard testimonial={testimonials[0]} index={0} />
-            <TestimonialCard testimonial={testimonials[2]} index={2} />
+        {/* Carousel Container */}
+        <div 
+          className="relative"
+          onMouseEnter={handleInteractionStart}
+          onMouseLeave={handleInteractionEnd}
+        >
+          <div 
+            ref={carouselRef}
+            onScroll={onScroll}
+            className="flex gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-12 cursor-grab active:cursor-grabbing"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {extendedTestimonials.map((testimonial, index) => (
+              <TestimonialCard key={`${testimonial.id}-${index}`} testimonial={testimonial} index={index} />
+            ))}
           </div>
-          <div className="lg:col-span-5 flex flex-col gap-8 lg:pt-24">
-            <TestimonialCard testimonial={testimonials[1]} index={1} />
-            <TestimonialCard testimonial={testimonials[3]} index={3} />
+          
+          {/* Progress Bar */}
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/5 rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full bg-brand"
+              animate={{ 
+                width: maxScroll > 0 ? `${(scrollX / maxScroll) * 100}%` : '0%' 
+              }}
+              transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+            />
           </div>
         </div>
 
