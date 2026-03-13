@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import { api, Project as SupabaseProject } from '../services/api';
 
 interface Project {
   id: string;
@@ -11,7 +12,7 @@ interface Project {
   description: string;
 }
 
-const projects: Project[] = [
+const mockProjects: Project[] = [
   {
     id: '01',
     title: 'Aether Platform',
@@ -125,6 +126,31 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
 };
 
 const ProjectsSection: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>(mockProjects);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await api.projects.getAll();
+        if (data && data.length > 0) {
+          const formattedProjects: Project[] = data.map(p => ({
+            id: p.display_id,
+            title: p.title,
+            category: p.category,
+            image: p.image_url,
+            year: p.year,
+            description: p.description
+          }));
+          setProjects(formattedProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   return (
     <section id="projects" className="py-32 lg:py-64 relative overflow-hidden bg-zinc-950">
       {/* Background Accents */}

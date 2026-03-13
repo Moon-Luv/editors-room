@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'motion/react';
 import { Linkedin, Twitter, Github, ArrowUpRight, Plus, ArrowLeft, ArrowRight } from 'lucide-react';
+import { api } from '../services/api';
 
 interface TeamMember {
   name: string;
@@ -14,7 +15,7 @@ interface TeamMember {
   };
 }
 
-const team: TeamMember[] = [
+const mockTeam: TeamMember[] = [
   {
     name: 'Alex Rivers',
     role: 'Creative Director',
@@ -60,7 +61,7 @@ const team: TeamMember[] = [
 ];
 
 // Triple the team for infinite scroll effect
-const extendedTeam = [...team, ...team, ...team];
+// This is now handled inside the TeamSection component
 
 const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ member, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -169,6 +170,35 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
 };
 
 const TeamSection: React.FC = () => {
+  const [team, setTeam] = useState<TeamMember[]>(mockTeam);
+  const extendedTeam = [...team, ...team, ...team];
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const data = await api.team.getAll();
+        if (data && data.length > 0) {
+          const formattedTeam: TeamMember[] = data.map(m => ({
+            name: m.name,
+            role: m.role,
+            bio: m.bio,
+            image: m.image_url,
+            socials: {
+              linkedin: m.linkedin_url || undefined,
+              twitter: m.twitter_url || undefined,
+              github: m.github_url || undefined
+            }
+          }));
+          setTeam(formattedTeam);
+        }
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+      }
+    };
+
+    fetchTeam();
+  }, []);
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [scrollX, setScrollX] = useState(0);

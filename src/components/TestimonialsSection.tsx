@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'motion/react';
 import { Quote, Star, ArrowRight, ArrowLeft, Plus } from 'lucide-react';
+import { api } from '../services/api';
 
 interface Testimonial {
-  id: number;
+  id: string;
   name: string;
   role: string;
   company: string;
@@ -12,9 +13,9 @@ interface Testimonial {
   rating: number;
 }
 
-const testimonials: Testimonial[] = [
+const mockTestimonials: Testimonial[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Lena Brooks',
     role: 'CEO',
     company: 'Nexora',
@@ -23,7 +24,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
   },
   {
-    id: 2,
+    id: '2',
     name: 'David Lin',
     role: 'Product Lead',
     company: 'Zupitar',
@@ -32,7 +33,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
   },
   {
-    id: 3,
+    id: '3',
     name: 'Uba Micheal',
     role: 'Founder',
     company: 'Fanoos',
@@ -41,7 +42,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
   },
   {
-    id: 4,
+    id: '4',
     name: 'Sarah Jenkins',
     role: 'Marketing Director',
     company: 'Veloce',
@@ -52,7 +53,7 @@ const testimonials: Testimonial[] = [
 ];
 
 // Triple for infinite scroll
-const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+// This is now handled inside the TestimonialsSection component
 
 const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = ({ testimonial, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -123,6 +124,33 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
 };
 
 const TestimonialsSection: React.FC = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(mockTestimonials);
+  const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const data = await api.testimonials.getAll();
+        if (data && data.length > 0) {
+          const formattedTestimonials: Testimonial[] = data.map(t => ({
+            id: t.id,
+            name: t.name,
+            role: t.role,
+            company: t.company,
+            content: t.content,
+            avatar: t.avatar_url,
+            rating: t.rating
+          }));
+          setTestimonials(formattedTestimonials);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [scrollX, setScrollX] = useState(0);
