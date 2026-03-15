@@ -7,6 +7,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { 
+  BrowserRouter as Router, 
+  Routes, 
+  Route, 
+  useLocation 
+} from 'react-router-dom';
+import { 
   ArrowRight, 
   Menu, 
   X, 
@@ -32,6 +38,17 @@ import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
 import TeamSection from './components/TeamSection';
 import TestimonialsSection from './components/TestimonialsSection';
+import BlogSection from './components/BlogSection';
+
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import DashboardHome from './pages/admin/DashboardHome';
+import ManageProjects from './pages/admin/ManageProjects';
+import ManageTeam from './pages/admin/ManageTeam';
+import ManageTestimonials from './pages/admin/ManageTestimonials';
+import AdminLogin from './pages/admin/AdminLogin';
+import ManageBlog from './pages/admin/ManageBlog';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -567,7 +584,7 @@ const Footer = () => {
 
 // --- Main App ---
 
-export default function App() {
+const MainSite = () => {
   useEffect(() => {
     const lenis = new Lenis();
     function raf(time: number) {
@@ -589,11 +606,41 @@ export default function App() {
         <ProjectsSection />
         <TeamSection />
         <TestimonialsSection />
+        <BlogSection />
         <FAQSection />
         <CTASection />
         <ContactSection />
       </main>
       <Footer />
     </div>
+  );
+};
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Main Website */}
+        <Route path="/" element={<MainSite />} />
+        
+        {/* Admin Dashboard */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="projects" element={<ManageProjects />} />
+          <Route path="team" element={<ManageTeam />} />
+          <Route path="testimonials" element={<ManageTestimonials />} />
+          <Route path="blog" element={<ManageBlog />} />
+          <Route path="settings" element={<div className="p-10 text-center text-zinc-500">Settings coming soon...</div>} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
