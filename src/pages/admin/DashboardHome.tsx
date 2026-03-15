@@ -8,7 +8,8 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   Briefcase,
-  Star
+  Star,
+  Loader2
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -22,6 +23,7 @@ import {
   Bar,
   Cell
 } from 'recharts';
+import { useDashboardStats } from '../../hooks/useAdminData';
 
 const data = [
   { name: 'Mon', views: 4000, interactions: 2400 },
@@ -39,7 +41,7 @@ const categoryData = [
   { name: 'App', value: 25, color: '#ff9c73' },
 ];
 
-const StatCard = ({ title, value, change, icon: Icon, trend }: any) => (
+const StatCard = ({ title, value, change, icon: Icon, trend, isLoading }: any) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -55,11 +57,17 @@ const StatCard = ({ title, value, change, icon: Icon, trend }: any) => (
       </div>
     </div>
     <p className="text-zinc-500 text-sm font-medium mb-1">{title}</p>
-    <h3 className="text-3xl font-display font-bold tracking-tight">{value}</h3>
+    {isLoading ? (
+      <Loader2 className="animate-spin text-brand" size={24} />
+    ) : (
+      <h3 className="text-3xl font-display font-bold tracking-tight">{value}</h3>
+    )}
   </motion.div>
 );
 
 const DashboardHome: React.FC = () => {
+  const { stats, recentActivity, isLoading } = useDashboardStats();
+
   return (
     <div className="space-y-10">
       {/* Header */}
@@ -70,10 +78,10 @@ const DashboardHome: React.FC = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Views" value="124.5k" change="12.5" icon={Eye} trend="up" />
-        <StatCard title="Active Projects" value="18" change="2.4" icon={Briefcase} trend="up" />
-        <StatCard title="Team Members" value="12" change="0" icon={Users} trend="up" />
-        <StatCard title="Client Rating" value="4.9" change="0.2" icon={Star} trend="up" />
+        <StatCard title="Total Projects" value={stats.projects} change="12.5" icon={Briefcase} trend="up" isLoading={isLoading} />
+        <StatCard title="Featured Projects" value={stats.featuredProjects} change="2.4" icon={TrendingUp} trend="up" isLoading={isLoading} />
+        <StatCard title="Team Members" value={stats.team} change="0" icon={Users} trend="up" isLoading={isLoading} />
+        <StatCard title="Testimonials" value={stats.testimonials} change="0.2" icon={MessageSquare} trend="up" isLoading={isLoading} />
       </div>
 
       {/* Charts Section */}
@@ -199,46 +207,64 @@ const DashboardHome: React.FC = () => {
             <button className="text-brand text-sm font-bold hover:underline">View All</button>
           </div>
           <div className="space-y-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer">
-                <div className="w-12 h-12 rounded-xl bg-zinc-800 overflow-hidden">
-                  <img src={`https://picsum.photos/seed/proj${i}/100/100`} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold">Project Alpha {i}</h4>
-                  <p className="text-xs text-zinc-500 uppercase tracking-widest">Digital Design</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold">Active</p>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest">2 days ago</p>
-                </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="animate-spin text-brand" size={32} />
               </div>
-            ))}
+            ) : recentActivity.recentProjects.length === 0 ? (
+              <p className="text-zinc-500 text-center py-10">No projects yet.</p>
+            ) : (
+              recentActivity.recentProjects.map((project) => (
+                <div key={project.id} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-zinc-800 overflow-hidden">
+                    <img src={project.image_url || `https://picsum.photos/seed/${project.id}/100/100`} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold">{project.title}</h4>
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest">{project.category}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold">Active</p>
+                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest">
+                      {new Date(project.created_at || '').toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
         <div className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-bold">New Testimonials</h3>
-            <button className="text-brand text-sm font-bold hover:underline">Approve All</button>
+            <button className="text-brand text-sm font-bold hover:underline">View All</button>
           </div>
           <div className="space-y-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden">
-                  <img src={`https://i.pravatar.cc/150?u=${i}`} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold">Client Name {i}</h4>
-                  <p className="text-xs text-zinc-400 line-clamp-1 italic">"The best agency we've ever worked with..."</p>
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, s) => (
-                    <Star key={s} size={10} className="fill-brand text-brand" />
-                  ))}
-                </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="animate-spin text-brand" size={32} />
               </div>
-            ))}
+            ) : recentActivity.recentTestimonials.length === 0 ? (
+              <p className="text-zinc-500 text-center py-10">No testimonials yet.</p>
+            ) : (
+              recentActivity.recentTestimonials.map((testimonial) => (
+                <div key={testimonial.id} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer">
+                  <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden">
+                    <img src={testimonial.avatar_url || `https://i.pravatar.cc/150?u=${testimonial.id}`} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold">{testimonial.name}</h4>
+                    <p className="text-xs text-zinc-400 line-clamp-1 italic">"{testimonial.content}"</p>
+                  </div>
+                  <div className="flex gap-1">
+                    {[...Array(testimonial.rating)].map((_, s) => (
+                      <Star key={s} size={10} className="fill-brand text-brand" />
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

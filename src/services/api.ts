@@ -53,6 +53,7 @@ export interface BlogPost {
 }
 
 export const api = {
+  supabase,
   storage: {
     uploadFile: async (bucket: string, file: File, options: { recordId?: string; tableName?: string; columnName?: string } = {}) => {
       const fileExt = file.name.split('.').pop();
@@ -185,6 +186,42 @@ export const api = {
     delete: async (id: string) => {
       const { error } = await supabase.from('blog_posts').delete().eq('id', id);
       if (error) throw error;
+    }
+  },
+  dashboard: {
+    getStats: async () => {
+      const [
+        { count: projectsCount },
+        { count: featuredProjectsCount },
+        { count: teamCount },
+        { count: testimonialsCount }
+      ] = await Promise.all([
+        supabase.from('projects').select('*', { count: 'exact', head: true }),
+        supabase.from('projects').select('*', { count: 'exact', head: true }).eq('is_featured', true),
+        supabase.from('team_members').select('*', { count: 'exact', head: true }),
+        supabase.from('testimonials').select('*', { count: 'exact', head: true })
+      ]);
+
+      return {
+        projects: projectsCount || 0,
+        featuredProjects: featuredProjectsCount || 0,
+        team: teamCount || 0,
+        testimonials: testimonialsCount || 0
+      };
+    },
+    getRecentActivity: async () => {
+      const [
+        { data: recentProjects },
+        { data: recentTestimonials }
+      ] = await Promise.all([
+        supabase.from('projects').select('*').order('created_at', { ascending: false }).limit(3),
+        supabase.from('testimonials').select('*').order('created_at', { ascending: false }).limit(3)
+      ]);
+
+      return {
+        recentProjects: recentProjects || [],
+        recentTestimonials: recentTestimonials || []
+      };
     }
   }
 };

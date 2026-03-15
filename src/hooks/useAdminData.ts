@@ -100,3 +100,66 @@ export function useBlogPosts() {
 
   return { posts, isLoading, error, refresh: fetchPosts };
 }
+
+export function useDashboardStats() {
+  const [stats, setStats] = useState({
+    projects: 0,
+    featuredProjects: 0,
+    team: 0,
+    testimonials: 0
+  });
+  const [recentActivity, setRecentActivity] = useState<{
+    recentProjects: Project[];
+    recentTestimonials: Testimonial[];
+  }>({
+    recentProjects: [],
+    recentTestimonials: []
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const [statsData, activityData] = await Promise.all([
+        api.dashboard.getStats(),
+        api.dashboard.getRecentActivity()
+      ]);
+      setStats(statsData);
+      setRecentActivity(activityData);
+      setError(null);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+
+    // Real-time subscriptions
+    const projectsSub = api.supabase
+      .channel('projects-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, () => fetchData())
+      .subscribe();
+
+    const teamSub = api.supabase
+      .channel('team-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'team_members' }, () => fetchData())
+      .subscribe();
+
+    const testimonialsSub = api.supabase
+      .channel('testimonials-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'testimonials' }, () => fetchData())
+      .subscribe();
+
+    return () => {
+      projectsSub.unsubscribe();
+      teamSub.unsubscribe();
+      testimonialsSub.unsubscribe();
+    };
+  }, [fetchData]);
+
+  return { stats, recentActivity, isLoading, error, refresh: fetchData };
+}
