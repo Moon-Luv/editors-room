@@ -9,7 +9,7 @@ interface Testimonial {
   role: string;
   company: string;
   content: string;
-  image_url: string;
+  avatar_url: string;
   rating: number;
 }
 
@@ -20,7 +20,7 @@ const mockTestimonials: Testimonial[] = [
     role: 'CEO',
     company: 'Nexora',
     content: 'Pumpkin Studio didn’t just build a website; they crafted a digital ecosystem that redefined our brand. Their attention to detail and technical prowess is unmatched in the industry.',
-    image_url: 'https://i.pravatar.cc/150?u=lena',
+    avatar_url: 'https://i.pravatar.cc/150?u=lena',
     rating: 5,
   },
   {
@@ -29,7 +29,7 @@ const mockTestimonials: Testimonial[] = [
     role: 'Product Lead',
     company: 'Zupitar',
     content: 'The team’s ability to translate complex requirements into intuitive, beautiful interfaces is remarkable. They are true partners in innovation.',
-    image_url: 'https://i.pravatar.cc/150?u=david',
+    avatar_url: 'https://i.pravatar.cc/150?u=david',
     rating: 5,
   },
   {
@@ -38,7 +38,7 @@ const mockTestimonials: Testimonial[] = [
     role: 'Founder',
     company: 'Fanoos',
     content: 'Since launching our new platform, our user engagement has increased by 300%. Pumpkin Studio is the secret weapon every startup needs.',
-    image_url: 'https://i.pravatar.cc/150?u=uba',
+    avatar_url: 'https://i.pravatar.cc/150?u=uba',
     rating: 5,
   },
   {
@@ -47,7 +47,7 @@ const mockTestimonials: Testimonial[] = [
     role: 'Marketing Director',
     company: 'Veloce',
     content: 'Working with Pumpkin was a masterclass in creative collaboration. They pushed our boundaries and delivered a result that far exceeded our expectations.',
-    image_url: 'https://i.pravatar.cc/150?u=sarahj',
+    avatar_url: 'https://i.pravatar.cc/150?u=sarahj',
     rating: 5,
   },
 ];
@@ -104,7 +104,7 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
           <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-brand/20 p-1">
             <div className="w-full h-full rounded-full overflow-hidden">
               <img
-                src={testimonial.image_url}
+                src={testimonial.avatar_url}
                 alt={testimonial.name}
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
                 referrerPolicy="no-referrer"
@@ -159,7 +159,7 @@ const TestimonialsSection: React.FC = () => {
             role: t.role,
             company: t.company,
             content: t.content,
-            image_url: t.image_url,
+            avatar_url: t.avatar_url,
             rating: t.rating
           }));
           setTestimonials(formattedTestimonials);

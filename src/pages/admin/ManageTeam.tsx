@@ -52,7 +52,7 @@ const ManageTeam: React.FC = () => {
     try {
       await api.team.delete(id);
       if (imageUrl) {
-        await api.storage.delete('team-avatars', imageUrl);
+        await api.storage.delete('team', imageUrl);
       }
       fetchTeam();
     } catch (error) {
@@ -67,7 +67,11 @@ const ManageTeam: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const publicUrl = await api.storage.upload('team-avatars', file);
+      const publicUrl = await api.storage.uploadFile('team', file, {
+        recordId: editingMember?.id,
+        tableName: 'team_members',
+        columnName: 'image_url'
+      });
       setFormData({ ...formData, image_url: publicUrl });
     } catch (error) {
       console.error('Error uploading image:', error);

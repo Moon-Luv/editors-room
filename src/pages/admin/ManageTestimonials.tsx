@@ -26,7 +26,7 @@ const ManageTestimonials: React.FC = () => {
     role: '',
     company: '',
     content: '',
-    image_url: '',
+    avatar_url: '',
     rating: 5,
     sort_order: 0
   });
@@ -38,7 +38,7 @@ const ManageTestimonials: React.FC = () => {
       role: t.role,
       company: t.company,
       content: t.content,
-      image_url: t.image_url,
+      avatar_url: t.avatar_url,
       rating: t.rating,
       sort_order: t.sort_order
     });
@@ -50,7 +50,7 @@ const ManageTestimonials: React.FC = () => {
     try {
       await api.testimonials.delete(id);
       if (imageUrl) {
-        await api.storage.delete('testimonial-avatars', imageUrl);
+        await api.storage.delete('testimonials', imageUrl);
       }
       fetchTestimonials();
     } catch (error) {
@@ -65,8 +65,12 @@ const ManageTestimonials: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const publicUrl = await api.storage.upload('testimonial-avatars', file);
-      setFormData({ ...formData, image_url: publicUrl });
+      const publicUrl = await api.storage.uploadFile('testimonials', file, {
+        recordId: editingTestimonial?.id,
+        tableName: 'testimonials',
+        columnName: 'avatar_url'
+      });
+      setFormData({ ...formData, avatar_url: publicUrl });
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image!');
@@ -114,7 +118,7 @@ const ManageTestimonials: React.FC = () => {
               role: '',
               company: '',
               content: '',
-              image_url: '',
+              avatar_url: '',
               rating: 5,
               sort_order: testimonials.length
             });
@@ -159,7 +163,7 @@ const ManageTestimonials: React.FC = () => {
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-full bg-zinc-800 overflow-hidden border border-white/5">
-                  <img src={t.image_url || `https://i.pravatar.cc/150?u=${t.id}`} alt="" className="w-full h-full object-cover" />
+                  <img src={t.avatar_url || `https://i.pravatar.cc/150?u=${t.id}`} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h3 className="font-bold text-lg">{t.name}</h3>
@@ -183,7 +187,7 @@ const ManageTestimonials: React.FC = () => {
                   <Edit2 size={16} /> Edit
                 </button>
                 <button 
-                  onClick={() => handleDelete(t.id, t.image_url)}
+                  onClick={() => handleDelete(t.id, t.avatar_url)}
                   className="flex-1 py-3 rounded-xl bg-red-400/5 text-red-400 hover:text-white hover:bg-red-400 transition-all flex items-center justify-center gap-2 text-sm font-bold"
                 >
                   <Trash2 size={16} /> Delete
@@ -228,8 +232,8 @@ const ManageTestimonials: React.FC = () => {
                       <input 
                         required 
                         type="url" 
-                        value={formData.image_url} 
-                        onChange={(e) => setFormData({...formData, image_url: e.target.value})} 
+                        value={formData.avatar_url} 
+                        onChange={(e) => setFormData({...formData, avatar_url: e.target.value})} 
                         placeholder="Avatar URL (https://...)" 
                         className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 focus:border-brand/50 outline-none transition-all text-sm" 
                       />
@@ -256,8 +260,8 @@ const ManageTestimonials: React.FC = () => {
                     <div className="flex flex-col gap-4">
                       <input required type="number" min="1" max="5" value={formData.rating} onChange={(e) => setFormData({...formData, rating: parseInt(e.target.value)})} className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 focus:border-brand/50 outline-none transition-all" />
                       <div className="w-full aspect-square max-h-[88px] rounded-2xl bg-white/5 border border-white/10 overflow-hidden relative group flex items-center justify-center">
-                        {formData.image_url ? (
-                          <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                        {formData.avatar_url ? (
+                          <img src={formData.avatar_url} alt="Preview" className="w-full h-full object-cover" />
                         ) : (
                           <Plus size={24} className="text-zinc-700" />
                         )}

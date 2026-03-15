@@ -57,7 +57,7 @@ const ManageProjects: React.FC = () => {
     try {
       await api.projects.delete(id);
       if (imageUrl) {
-        await api.storage.delete('project-images', imageUrl);
+        await api.storage.delete('projects', imageUrl);
       }
       fetchProjects();
     } catch (error) {
@@ -72,7 +72,11 @@ const ManageProjects: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const publicUrl = await api.storage.upload('project-images', file);
+      const publicUrl = await api.storage.uploadFile('projects', file, {
+        recordId: editingProject?.id,
+        tableName: 'projects',
+        columnName: 'image_url'
+      });
       setFormData({ ...formData, image_url: publicUrl });
     } catch (error) {
       console.error('Error uploading image:', error);

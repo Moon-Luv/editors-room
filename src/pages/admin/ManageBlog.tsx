@@ -57,7 +57,11 @@ const ManageBlog: React.FC = () => {
 
     try {
       setIsSubmitting(true);
-      const publicUrl = await api.storage.upload('blog-images', file);
+      const publicUrl = await api.storage.uploadFile('blog', file, {
+        recordId: editingPost?.id,
+        tableName: 'blog_posts',
+        columnName: 'image_url'
+      });
       setFormData(prev => ({ ...prev, image_url: publicUrl }));
     } catch (error) {
       console.error('Upload error:', error);
@@ -99,7 +103,7 @@ const ManageBlog: React.FC = () => {
     try {
       await api.blog.delete(id);
       if (imageUrl) {
-        await api.storage.delete('blog-images', imageUrl);
+        await api.storage.delete('blog', imageUrl);
       }
       fetchPosts();
     } catch (error) {

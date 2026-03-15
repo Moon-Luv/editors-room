@@ -32,7 +32,7 @@ export interface Testimonial {
   role: string;
   company: string;
   content: string;
-  image_url: string;
+  avatar_url: string;
   rating: number;
   sort_order: number;
   created_at?: string;
@@ -54,19 +54,16 @@ export interface BlogPost {
 
 export const api = {
   storage: {
-    getOptimizedUrl: (path: string, options: { width?: number; quality?: number } = {}) => {
-      const { width = 800, quality = 80 } = options;
-      const baseUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/render/image/public`;
-      return `${baseUrl}/${path}?width=${width}&quality=${quality}`;
-    },
-    upload: async (bucket: string, file: File) => {
+    uploadFile: async (bucket: string, file: File, options: { recordId?: string; tableName?: string; columnName?: string } = {}) => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 
@@ -74,9 +71,20 @@ export const api = {
         .from(bucket)
         .getPublicUrl(filePath);
 
+      // If recordId and tableName are provided, update the database immediately
+      if (options.recordId && options.tableName && options.columnName) {
+        const { error: updateError } = await supabase
+          .from(options.tableName)
+          .update({ [options.columnName]: publicUrl })
+          .eq('id', options.recordId);
+        
+        if (updateError) throw updateError;
+      }
+
       return publicUrl;
     },
     delete: async (bucket: string, url: string) => {
+      if (!url) return;
       const fileName = url.split('/').pop();
       if (!fileName) return;
       const { error } = await supabase.storage.from(bucket).remove([fileName]);
