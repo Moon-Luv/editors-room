@@ -67,7 +67,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
       }`}
     >
       {/* Project Image */}
-      <div className={`lg:col-span-7 overflow-hidden rounded-2xl border border-white/5 group relative aspect-[16/10] ${
+      <div className={`lg:col-span-7 overflow-hidden rounded-2xl border border-white/5 group relative aspect-[16/10] cursor-pointer ${
         index % 2 !== 0 ? 'lg:order-2' : 'lg:order-1'
       }`}>
         <motion.img
@@ -113,7 +113,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
           
           <motion.button
             whileHover={{ x: index % 2 !== 0 ? -5 : 5 }}
-            className="group flex items-center gap-4 text-white hover:text-brand transition-colors"
+            className="group flex items-center gap-4 text-white hover:text-brand transition-colors cursor-pointer"
           >
             <span className="text-sm font-bold uppercase tracking-widest">View Project</span>
             <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-brand group-hover:bg-brand group-hover:text-white transition-all">
@@ -231,7 +231,7 @@ const ProjectsSection: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-6 rounded-2xl bg-white text-black font-bold text-xl hover:bg-brand hover:text-white transition-all shadow-2xl brand-glow"
+            className="px-12 py-6 rounded-2xl bg-white text-black font-bold text-xl hover:bg-brand hover:text-white transition-all shadow-2xl brand-glow cursor-pointer"
           >
             Explore All Projects
           </motion.button>

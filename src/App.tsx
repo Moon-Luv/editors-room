@@ -174,7 +174,7 @@ const Navbar = () => {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255, 77, 0, 0.4)" }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-black px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-brand hover:text-white transition-all brand-glow"
+              className="bg-white text-black px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-brand hover:text-white transition-all brand-glow cursor-pointer"
             >
               Get Started
             </motion.button>
@@ -224,7 +224,7 @@ const Navbar = () => {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255, 77, 0, 0.6)" }}
               whileTap={{ scale: 0.95 }}
-              className="mt-8 bg-brand text-white px-10 py-4 rounded-2xl font-bold text-xl brand-glow"
+              className="mt-8 bg-brand text-white px-10 py-4 rounded-2xl font-bold text-xl brand-glow cursor-pointer"
             >
               Get Started
             </motion.button>
@@ -304,7 +304,7 @@ const Hero = () => {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255, 77, 0, 0.5)" }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all flex items-center gap-3 group brand-glow"
+              className="bg-white text-black px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand hover:text-white transition-all flex items-center gap-3 group brand-glow cursor-pointer"
             >
               Get Started
               <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
@@ -312,7 +312,7 @@ const Hero = () => {
             <motion.button 
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-5 rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/5 transition-all"
+              className="px-10 py-5 rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/5 transition-all cursor-pointer"
             >
               View our work
             </motion.button>
@@ -484,7 +484,7 @@ const CTASection = () => {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(255, 255, 255, 0.3)" }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-black px-12 py-6 rounded-2xl font-bold text-xl transition-all shadow-2xl"
+              className="bg-white text-black px-12 py-6 rounded-2xl font-bold text-xl transition-all shadow-2xl cursor-pointer"
             >
               Get Started Now
             </motion.button>
@@ -578,13 +578,13 @@ const Footer = () => {
             </a>
             <h2 className="text-4xl md:text-6xl font-display font-bold tracking-tighter mb-8 leading-[0.9]">Ready to build <br /> the future?</h2>
             <div className="flex gap-4">
-              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all">
+              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all cursor-pointer">
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all">
+              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all cursor-pointer">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all">
+              <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand transition-all cursor-pointer">
                 <Github size={20} />
               </a>
             </div>

@@ -106,7 +106,7 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
       viewport={{ once: true, margin: "-50px" }}
       onMouseMove={handleMouseMove}
       whileHover={{ scale: 1.02, transition: { duration: 0.4, ease: "easeOut" } }}
-      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group flex-shrink-0 w-[320px] md:w-[600px] snap-start hover:shadow-2xl hover:shadow-brand/5 transition-shadow duration-500"
+      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group flex-shrink-0 w-[320px] md:w-[600px] snap-start hover:shadow-2xl hover:shadow-brand/5 transition-shadow duration-500 cursor-pointer"
     >
       {/* Spotlight Effect */}
       <motion.div

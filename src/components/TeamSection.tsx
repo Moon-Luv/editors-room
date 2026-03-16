@@ -135,7 +135,7 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
       onMouseLeave={handleMouseLeave}
       whileHover={{ y: -10, transition: { duration: 0.4, ease: "easeOut" } }}
       style={{ x: springX, y: springY }}
-      className="group relative flex-shrink-0 w-[300px] md:w-[400px]"
+      className="group relative flex-shrink-0 w-[300px] md:w-[400px] cursor-pointer"
     >
       <div className="relative aspect-[4/5] rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900 shadow-2xl group-hover:shadow-brand/20 transition-shadow duration-500">
         <motion.img
