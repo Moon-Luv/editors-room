@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
 import { api, Project as SupabaseProject } from '../services/api';
+import { MaskedHeading } from './AnimatedHeading';
 
 interface Project {
   id: string;
@@ -193,17 +194,23 @@ const ProjectsSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="mb-32 lg:mb-48">
-          <div className="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-white/10 bg-white/5">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-3 mb-8 px-4 py-2 rounded-full border border-white/10 bg-white/5"
+          >
             <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
             <span className="text-zinc-400 font-medium tracking-widest uppercase text-[10px]">
               Selected Works
             </span>
-          </div>
+          </motion.div>
           
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-display font-medium tracking-tight leading-[0.85] text-white">
+          <MaskedHeading className="text-6xl md:text-8xl lg:text-9xl font-display font-medium tracking-tight leading-[0.85] text-white">
             Crafting digital <br />
             <span className="italic font-light text-zinc-500">excellence</span>.
-          </h2>
+          </MaskedHeading>
         </div>
 
         {/* Projects List */}

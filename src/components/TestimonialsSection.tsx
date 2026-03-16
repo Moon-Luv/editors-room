@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'motion/react';
 import { Quote, Star, ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { api } from '../services/api';
+import { MaskedHeading } from './AnimatedHeading';
 
 interface Testimonial {
   id: string;
@@ -324,22 +325,24 @@ const TestimonialsSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-32">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-4 mb-8">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-4 mb-8"
+            >
               <span className="w-16 h-[1px] bg-brand" />
               <span className="text-brand font-bold tracking-[0.4em] uppercase text-xs">
                 Client Stories
               </span>
-            </div>
-            <motion.h2 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            </motion.div>
+            <MaskedHeading 
               className="text-7xl md:text-9xl font-display font-bold tracking-tighter leading-[0.8] text-white"
             >
               Voices of <br />
               <span className="text-zinc-600 italic font-light">our partners</span>.
-            </motion.h2>
+            </MaskedHeading>
           </div>
           
           <div className="flex gap-4">

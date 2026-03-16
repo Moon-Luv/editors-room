@@ -39,6 +39,7 @@ import ProjectsSection from './components/ProjectsSection';
 import TeamSection from './components/TeamSection';
 import TestimonialsSection from './components/TestimonialsSection';
 import BlogSection from './components/BlogSection';
+import { MaskedHeading } from './components/AnimatedHeading';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -364,8 +365,18 @@ const FeaturesSection = () => {
     <section id="features" ref={sectionRef} className="py-32 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-24">
-          <span className="text-brand font-bold tracking-[0.3em] uppercase text-sm mb-4 block">Capabilities</span>
-          <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter">We build what others only imagine.</h2>
+          <motion.span 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-brand font-bold tracking-[0.3em] uppercase text-sm mb-4 block"
+          >
+            Capabilities
+          </motion.span>
+          <MaskedHeading className="text-5xl md:text-7xl font-display font-bold tracking-tighter">
+            We build what others only imagine.
+          </MaskedHeading>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
