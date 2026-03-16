@@ -126,7 +126,7 @@ const ManageTeam: React.FC = () => {
             });
             setIsModalOpen(true);
           }}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-brand text-white rounded-xl sm:rounded-2xl font-bold hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 text-sm sm:text-base"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-brand text-white rounded-xl sm:rounded-2xl font-bold hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 text-sm sm:text-base cursor-pointer"
         >
           <Plus size={20} />
           Add Member
@@ -157,7 +157,8 @@ const ManageTeam: React.FC = () => {
             <motion.div 
               layout
               key={member.id}
-              className="p-5 sm:p-6 rounded-[24px] sm:rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-brand/20 transition-all group relative overflow-hidden"
+              whileHover={{ y: -8, scale: 1.02, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
+              className="p-5 sm:p-6 rounded-[24px] sm:rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-brand/20 transition-all group relative overflow-hidden cursor-pointer"
             >
               <div className="flex items-start gap-4 mb-4 sm:mb-6">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl bg-zinc-800 overflow-hidden border border-white/5 shrink-0">
@@ -177,13 +178,13 @@ const ManageTeam: React.FC = () => {
               <div className="flex gap-2">
                 <button 
                   onClick={() => handleEdit(member)}
-                  className="flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm font-bold"
+                  className="flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm font-bold cursor-pointer"
                 >
                   <Edit2 size={16} /> Edit
                 </button>
                 <button 
                   onClick={() => handleDelete(member.id, member.image_url)}
-                  className="flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-red-400/5 text-red-400 hover:text-white hover:bg-red-400 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm font-bold"
+                  className="flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-red-400/5 text-red-400 hover:text-white hover:bg-red-400 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm font-bold cursor-pointer"
                 >
                   <Trash2 size={16} /> Delete
                 </button>
@@ -200,7 +201,7 @@ const ManageTeam: React.FC = () => {
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 rounded-[24px] sm:rounded-[40px] shadow-2xl overflow-hidden">
               <div className="p-5 sm:p-8 border-b border-white/5 flex justify-between items-center">
                 <h2 className="text-xl sm:text-2xl font-display font-bold">{editingMember ? 'Edit Member' : 'Add New Member'}</h2>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 rounded-full hover:bg-white/5 text-zinc-500 hover:text-white"><X className="w-5 h-5 sm:w-6 sm:h-6" /></button>
+                <button onClick={() => setIsModalOpen(false)} className="p-2 rounded-full hover:bg-white/5 text-zinc-500 hover:text-white cursor-pointer"><X className="w-5 h-5 sm:w-6 sm:h-6" /></button>
               </div>
               <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
@@ -252,7 +253,7 @@ const ManageTeam: React.FC = () => {
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, image_url: ''})}
-                            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                           >
                             <X size={14} />
                           </button>
@@ -277,8 +278,8 @@ const ManageTeam: React.FC = () => {
                   </div>
                 </div>
                 <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/5 text-white font-bold hover:bg-white/10 transition-all text-sm sm:text-base order-2 sm:order-1">Cancel</button>
-                  <button type="submit" className="flex-1 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-brand text-white font-bold hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 text-sm sm:text-base order-1 sm:order-2">{editingMember ? 'Update Member' : 'Create Member'}</button>
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/5 text-white font-bold hover:bg-white/10 transition-all text-sm sm:text-base order-2 sm:order-1 cursor-pointer">Cancel</button>
+                  <button type="submit" className="flex-1 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-brand text-white font-bold hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 text-sm sm:text-base order-1 sm:order-2 cursor-pointer">{editingMember ? 'Update Member' : 'Create Member'}</button>
                 </div>
               </form>
             </motion.div>
