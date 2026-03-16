@@ -372,10 +372,10 @@ const FeaturesSection = () => {
           {features.map((feature, idx) => (
             <motion.div 
               key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.8 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
               whileHover={{ y: -10, scale: 1.02 }}
               className="p-10 rounded-[40px] bg-white/5 border border-white/10 hover:border-brand/50 transition-all group relative overflow-hidden cursor-pointer"
             >
@@ -414,7 +414,14 @@ const FAQSection = () => {
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="rounded-3xl bg-white/5 border border-white/10 overflow-hidden">
+            <motion.div 
+              key={idx} 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-20px" }}
+              transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
+              className="rounded-3xl bg-white/5 border border-white/10 overflow-hidden"
+            >
               <button 
                 className="w-full p-8 flex justify-between items-center text-left hover:bg-white/10 transition-colors cursor-pointer group"
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
@@ -430,6 +437,7 @@ const FAQSection = () => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     className="overflow-hidden"
                   >
                     <p className="p-8 pt-0 text-lg text-zinc-400 leading-relaxed">
@@ -438,7 +446,7 @@ const FAQSection = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

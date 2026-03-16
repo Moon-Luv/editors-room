@@ -67,6 +67,20 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Scroll Reveal Variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1] as const
+      }
+    })
+  };
+
   // Magnetic Effect
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -74,6 +88,20 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
   const springConfig = { damping: 20, stiffness: 150 };
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
+
+  // Text Reveal Variants
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: (index % 6) * 0.1 + i * 0.1,
+        duration: 0.5,
+        ease: "easeOut" as const
+      }
+    })
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -96,13 +124,19 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
   return (
     <motion.div
       ref={cardRef}
+      custom={index % 6} // Use modulo to stagger within visible sets
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
+      whileHover={{ y: -10, transition: { duration: 0.4, ease: "easeOut" } }}
       style={{ x: springX, y: springY }}
       className="group relative flex-shrink-0 w-[300px] md:w-[400px]"
     >
-      <div className="relative aspect-[4/5] rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900 shadow-2xl">
+      <div className="relative aspect-[4/5] rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900 shadow-2xl group-hover:shadow-brand/20 transition-shadow duration-500">
         <motion.img
           src={member.image}
           alt={member.name}
@@ -114,21 +148,39 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
         
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />
 
-        <div className="absolute top-6 right-6 flex flex-col gap-3 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+        <div className="absolute top-6 right-6 flex flex-col gap-3">
           {member.socials.linkedin && (
-            <a href={member.socials.linkedin} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all">
+            <motion.a 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              href={member.socials.linkedin} 
+              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all"
+            >
               <Linkedin size={20} />
-            </a>
+            </motion.a>
           )}
           {member.socials.twitter && (
-            <a href={member.socials.twitter} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all">
+            <motion.a 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              href={member.socials.twitter} 
+              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all"
+            >
               <Twitter size={20} />
-            </a>
+            </motion.a>
           )}
           {member.socials.github && (
-            <a href={member.socials.github} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all">
+            <motion.a 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              href={member.socials.github} 
+              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-brand hover:scale-110 transition-all"
+            >
               <Github size={20} />
-            </a>
+            </motion.a>
           )}
         </div>
 
@@ -136,14 +188,33 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
           <div className="flex items-end justify-between mb-4">
             <div>
               <motion.p 
-                animate={{ y: isHovered ? 0 : 10, opacity: isHovered ? 1 : 0.6 }}
+                custom={1}
+                variants={textVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                animate={{ 
+                  y: isHovered ? 0 : 0, // Keep it at 0 if visible
+                  opacity: isHovered ? 1 : 0.6 
+                }}
                 className="text-brand font-mono text-[11px] uppercase tracking-[0.3em] mb-2"
               >
                 {member.role}
               </motion.p>
-              <h3 className="text-3xl font-display font-bold text-white tracking-tighter leading-none">
+              <motion.h3 
+                custom={2}
+                variants={textVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                animate={{
+                  color: isHovered ? "#FF4D00" : "#FFFFFF",
+                  transition: { duration: 0.3 }
+                }}
+                className="text-3xl font-display font-bold text-white tracking-tighter leading-none"
+              >
                 {member.name}
-              </h3>
+              </motion.h3>
             </div>
             <motion.div 
               animate={{ rotate: isHovered ? 45 : 0 }}
@@ -159,9 +230,16 @@ const TeamMemberCard: React.FC<{ member: TeamMember; index: number }> = ({ membe
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-sm text-zinc-400 leading-relaxed pt-4 border-t border-white/10">
+            <motion.p 
+              custom={3}
+              variants={textVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="text-sm text-zinc-400 leading-relaxed pt-4 border-t border-white/10"
+            >
               {member.bio}
-            </p>
+            </motion.p>
           </motion.div>
         </div>
       </div>
@@ -332,10 +410,16 @@ const TeamSection: React.FC = () => {
                 Our Talent
               </span>
             </div>
-            <h2 className="text-7xl md:text-9xl font-display font-bold tracking-tighter leading-[0.8] text-white">
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-7xl md:text-9xl font-display font-bold tracking-tighter leading-[0.8] text-white"
+            >
               The minds <br />
               <span className="text-zinc-600 italic font-light">behind Pumpkin</span>.
-            </h2>
+            </motion.h2>
           </div>
           
           <div className="flex flex-col gap-8">

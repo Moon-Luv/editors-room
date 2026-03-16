@@ -60,6 +60,34 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // Scroll Reveal Variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1] as const
+      }
+    })
+  };
+
+  // Word Reveal Variants
+  const wordVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: (index % 4) * 0.1 + i * 0.02,
+        duration: 0.4,
+        ease: "easeOut" as const
+      }
+    })
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const { left, top } = cardRef.current.getBoundingClientRect();
@@ -70,8 +98,14 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
   return (
     <motion.div
       ref={cardRef}
+      custom={index % 4}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
       onMouseMove={handleMouseMove}
-      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group flex-shrink-0 w-[320px] md:w-[600px] snap-start"
+      whileHover={{ scale: 1.02, transition: { duration: 0.4, ease: "easeOut" } }}
+      className="relative p-10 md:p-16 rounded-[48px] bg-white/[0.02] border border-white/10 overflow-hidden group flex-shrink-0 w-[320px] md:w-[600px] snap-start hover:shadow-2xl hover:shadow-brand/5 transition-shadow duration-500"
     >
       {/* Spotlight Effect */}
       <motion.div
@@ -97,7 +131,19 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
         </div>
 
         <p className="text-xl md:text-3xl font-display font-medium leading-[1.3] text-white mb-12 tracking-tight">
-          "{testimonial.content}"
+          {testimonial.content.split(" ").map((word, i) => (
+            <motion.span
+              key={i}
+              custom={i}
+              variants={wordVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="inline-block mr-[0.25em]"
+            >
+              {word}
+            </motion.span>
+          ))}
         </p>
 
         <div className="flex items-center gap-6">
@@ -112,10 +158,24 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; index: number }> = (
             </div>
           </div>
           <div>
-            <h4 className="font-bold text-white text-xl md:text-2xl tracking-tighter">{testimonial.name}</h4>
-            <p className="text-zinc-500 text-xs md:text-sm font-mono uppercase tracking-[0.2em]">
+            <motion.h4 
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (index % 4) * 0.1 + 0.5 }}
+              className="font-bold text-white text-xl md:text-2xl tracking-tighter"
+            >
+              {testimonial.name}
+            </motion.h4>
+            <motion.p 
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (index % 4) * 0.1 + 0.6 }}
+              className="text-zinc-500 text-xs md:text-sm font-mono uppercase tracking-[0.2em]"
+            >
               {testimonial.role} <span className="text-brand mx-2">/</span> {testimonial.company}
-            </p>
+            </motion.p>
           </div>
         </div>
       </div>
@@ -270,10 +330,16 @@ const TestimonialsSection: React.FC = () => {
                 Client Stories
               </span>
             </div>
-            <h2 className="text-7xl md:text-9xl font-display font-bold tracking-tighter leading-[0.8] text-white">
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-7xl md:text-9xl font-display font-bold tracking-tighter leading-[0.8] text-white"
+            >
               Voices of <br />
               <span className="text-zinc-600 italic font-light">our partners</span>.
-            </h2>
+            </motion.h2>
           </div>
           
           <div className="flex gap-4">
