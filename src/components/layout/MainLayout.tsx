@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CustomCursor } from '../ui/CustomCursor';
+import { ScrollToTopButton } from '../ui/ScrollToTopButton';
 import { Outlet } from 'react-router-dom';
 
 export const MainLayout = () => {
@@ -15,6 +16,7 @@ export const MainLayout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+      <ScrollToTopButton />
     </>
   );
 };
