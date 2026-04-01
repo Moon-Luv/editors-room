@@ -30,18 +30,7 @@ export const LoginPage = () => {
       return;
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
-
-    if (profile?.role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/');
-    }
+    navigate('/admin');
     setLoading(false);
   };
 
